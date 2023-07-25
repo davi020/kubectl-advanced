@@ -1,15 +1,15 @@
-name: "Kubernetes Action with Python 2.x fixes"
-description: "Interacts with kubernetes clusters calling kubectl commands. Integrates support for AWS EKS."
+name: "Kubectl Multi-line Command Action"
+description: "Kubectl multiline command support for communicating with AWS EKS clusters"
 branding:
   icon: 'anchor'  
   color: 'blue'
 inputs:
   command:
-    description: "Arguments of kubectl"
+    description: "List of kubectl commands"
     required: true
 outputs:
   result:
-    description: "Output of the kubectl command run"
+    description: "Output of the kubectl commands"
 runs:
   using: "docker"
   image: "Dockerfile"
