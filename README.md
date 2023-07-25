@@ -1,23 +1,22 @@
 Kubectl-advanced
 =============
-Interacts with EKS clusters calling **multi-line** `kubectl` commands. This action will fix the **set-output** warnings and **python2.x** EOL issues.
+* Interacts with EKS clusters calling **multi-line** `kubectl` commands.
+*  This action will fix the **set-output** warnings and **python2.x** EOL issues.
 
 ## Package dependencies ##
 
-`Kubectl version = v1.27.1`
-
-`AWS CLI version = aws-cli/1.29.5`
+* Kubectl version = v1.27.1 
+* AWS CLI version = aws-cli/1.29.5 
 
 ### Known Issue with this action -
-If you are getting the below issue - 
+#### $\textcolor{red}{\textsf{If you are getting the below issue}}$ 
 ```
 error: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
 ```
-Update that line/value in your .kube/config file to this - 
+#### $\textcolor{green}{\textsf{Update that line/value in your .kube/config file to this - }}$ 
 ```
 client.authentication.k8s.io/v1beta1
 ```
-
 Then base64 encode it again and update your secret in GitHub. 
 
 ## Usage
@@ -41,7 +40,7 @@ jobs:
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: apply deployment.yaml
+          command: apply deployment.yaml
 ```
 
 ### EKS Example
@@ -69,10 +68,10 @@ jobs:
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: apply deployment.yaml
+          command: apply deployment.yaml
 ```
 
-## Config
+## Configs
 
 ### Secrets
 
@@ -87,7 +86,7 @@ cat ~/.kube/config | base64 | pbcopy # pbcopy will copy the secret to the clipbo
 ```
 
 #### EKS
-- **KUBE_CONFIG_DATA**: Same as Basic configuration above.
+- **KUBE_CONFIG_DATA**: Same as the Basic configuration above.
 
 - **AWS_ACCESS_KEY_ID**: AWS_ACCESS_KEY_ID of an IAM user with permission to access the cluster.
 
@@ -95,23 +94,46 @@ cat ~/.kube/config | base64 | pbcopy # pbcopy will copy the secret to the clipbo
 
 Make sure your users have the proper IAM permissions to access your cluster and that it's configured inside Kubernetes (more info [here](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html)).
 
+## Multi-line kubectl commands
+
+- **command**: Multi-line `kubectl` command(s).
+
+### Example
+```yaml
+    - name: Trigger EKS deployment
+      id: kubectl
+      uses: davi020/kubectl-advanced@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+      with:
+        command: |
+          kubectl get ns
+          kubectl get nodes 
+          kubectl get svc -A
+
+    - name: Print Response
+      run: echo "${{ steps.kubectl.outputs.response }}"
+```
+
 ## Outputs
 
 - **response**: Output of the `kubectl` command(s).
 
 ### Example
 ```yaml
-      - name: Save container image
-        id: image-save
-        uses: davi020/kubectl-advanced@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: get deploy foo -o jsonpath="{..image}"
+    - name: Trigger EKS deployment
+      id: kubectl
+      uses: davi020/kubectl-advanced@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+      with:
+        command: |
+          kubectl get ns
+          kubectl get nodes 
+          kubectl get svc -A
 
-      - name: Print image
-        run: 
-          echo ${{ steps.image-save.outputs.result }}
+    - name: Print Response
+      run: echo "${{ steps.kubectl.outputs.response }}"
 ```
 
 More info on how to use outputs [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/metadata-syntax-for-github-actions#outputs).
