@@ -1,9 +1,14 @@
-kubernetes-action : Fix for the recent change in awscli package that removes support for Python 2.7 
+Kubectl-advanced
 =============
-Interacts with kubernetes clusters calling `kubectl` commands. Integrates support for **AWS EKS**.
+Interacts with EKS clusters calling **multi-line** `kubectl` commands. This action will fix the **set-output** warnings and **python2.x** EOL issues.
 
-### Kubectl version = v1.27.1
+## Package dependencies ##
 
+`Kubectl version = v1.27.1`
+
+`AWS CLI version = aws-cli/1.29.5`
+
+### Known Issue with this action -
 If you are getting the below issue - 
 ```
 error: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
@@ -32,7 +37,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Trigger deploy
-        uses: davi020/kubernetes-action@master
+        uses: davi020/kubectl-advanced@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
@@ -60,7 +65,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Trigger deploy
-        uses: davi020/kubernetes-action@master
+        uses: davi020/kubectl-advanced@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
@@ -71,7 +76,7 @@ jobs:
 
 ### Secrets
 
-One or more **secrets** needs to be created to store cluster credentials. (see [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets) for help on creating secrets). 
+One or more **secrets** need to be created to store cluster credentials. (see [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets) for help on creating secrets). 
 
 #### Basic
 - **KUBE_CONFIG_DATA**: A `base64` representation of `~/.kube/config` file.
@@ -84,21 +89,21 @@ cat ~/.kube/config | base64 | pbcopy # pbcopy will copy the secret to the clipbo
 #### EKS
 - **KUBE_CONFIG_DATA**: Same as Basic configuration above.
 
-- **AWS_ACCESS_KEY_ID**: AWS_ACCESS_KEY_ID of a IAM user with permissions to access the cluster.
+- **AWS_ACCESS_KEY_ID**: AWS_ACCESS_KEY_ID of an IAM user with permission to access the cluster.
 
-- **AWS_SECRET_ACCESS_KEY**: AWS_SECRET_ACCESS_KEY of a IAM user with permissions to access the cluster.
+- **AWS_SECRET_ACCESS_KEY**: AWS_SECRET_ACCESS_KEY of an IAM user with permission to access the cluster.
 
-Make sure your users has the proper IAM permissions to access your cluster and that its configured inside kubernetes (more info [here](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html)).
+Make sure your users have the proper IAM permissions to access your cluster and that it's configured inside Kubernetes (more info [here](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html)).
 
 ## Outputs
 
-- **result**: Output of the `kubectl` command.
+- **response**: Output of the `kubectl` command(s).
 
 ### Example
 ```yaml
       - name: Save container image
         id: image-save
-        uses: davi020/kubernetes-action@master
+        uses: davi020/kubectl-advanced@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
