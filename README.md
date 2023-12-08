@@ -6,8 +6,7 @@ Kubectl-advanced
 ## Package dependencies ##
 
 * Kubectl version = v1.27.1 
-* AWS CLI version = aws-cli/1.29.5 
-
+* AWS CLI version = aws-cli/2.13.25
 ### Known Issue with this action -
 #### $\textcolor{red}{\textsf{If you are getting the below issue}}$ 
 ```
